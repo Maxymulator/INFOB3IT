@@ -33,17 +33,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   unsigned long curMillis = millis();
-  if (curMillis % 1000 < 10)
-  {
-    OnLEDYlw();
-    OffLEDGrn();
-  }
-  if (curMillis % 2000 < 10)
-  {
-    OffLEDYlw();
-    OnLEDGrn();
-  }
+  HandleButtons();
 
-  Serial.println(analogRead(BUTTON_PIN));
 }
 /// END OF MAIN FUNCTIONS ///
