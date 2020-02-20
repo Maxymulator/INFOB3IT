@@ -50,8 +50,7 @@ void setup()
 
   // Turn on the LCD screen
   lcd.begin(16, 2); // width 16px by height 2px
-  PrintLCDTopLine("Hello World");
-  PrintLCDBottomLine("5");
+  PrintClrLCDTopLine("Hello World");
 }
 
 void loop()
@@ -59,8 +58,6 @@ void loop()
   // put your main code here, to run repeatedly:
   unsigned long curMillis = millis();
   HandleButtons();
-  lcd.setCursor(0,1);
-  lcd.print(millis() / 1000); 
-
+  PrintLCDBottomLine(curMillis / 1000); 
 }
 /// END OF MAIN FUNCTIONS ///
