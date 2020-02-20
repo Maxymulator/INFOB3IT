@@ -57,12 +57,15 @@ void PerformButtonAction(int button)
   {
     case 1: // button 1 pressed
       OnLEDGrn(); // TEMP for testing
+      PrintLCDTopLine("Button 1");
       break;
     case 2: // button 2 pressed
       ToggleLEDYlw(); // TEMP for testing
+      PrintLCDTopLine("Button 2");
       break;
     case 3: // button 3 pressed
       ToggleLEDGrn(); // TEMP for testing
+      PrintLCDTopLine("Button 3");
       break;
     default: // no buttons pressed
       break;
