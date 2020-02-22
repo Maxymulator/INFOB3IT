@@ -10,8 +10,11 @@ const int PMW_MID = 128;
 // The LEDs are plugged in to pin 9
 const int LED_PIN = 9;
 
-// The buttons are plugged in to pin 5
+// The buttons are plugged in to pin A5
 const int BUTTON_PIN = A5;
+
+// The LDR is plugged in to pin A4
+const int LDR_PIN = A4;
 
 // Sonar
 // The Sonar distance sensor is plugged in to pin 8
@@ -46,6 +49,7 @@ void setup()
   // Pin mode setup:
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
+  pinMode(LDR_PIN, INPUT);
   pinMode(LCD_RS, OUTPUT);
   pinMode(LCD_E, OUTPUT);
   pinMode(LCD_D4, OUTPUT);
@@ -71,6 +75,7 @@ void loop()
   unsigned long curMillis = millis();
   HandleButtons();
   //PrintLCDBottomLine(curMillis / 1000); 
-  PrintLCDBottomLine(SonarPingcm()); 
+  PrintClrLCDBottomLine(SonarPingcm()); 
+  IsLightOn();
 }
 /// END OF MAIN FUNCTIONS ///
