@@ -1,5 +1,6 @@
 /// LIBARIES ///
 #include <LiquidCrystal.h> // LCD library
+#include <NewPing.h> // Sonar library
 /// END OF LIBRARIES ///
 
 /// CONSTANTS ///
@@ -12,6 +13,17 @@ const int LED_PIN = 9;
 // The buttons are plugged in to pin 5
 const int BUTTON_PIN = A5;
 
+// Sonar
+// The Sonar distance sensor is plugged in to pin 8
+const int SONAR_PIN = 8;
+
+// The max distance the sonar will see in cm
+const int SONAR_MAX_DIST = 100;
+
+// Initialize the sonar
+NewPing sonar(SONAR_PIN, SONAR_PIN, SONAR_MAX_DIST);
+
+// LCD
 // LCD pins
 const int LCD_RS = 12;
 const int LCD_E = 11;
@@ -58,6 +70,7 @@ void loop()
   // put your main code here, to run repeatedly:
   unsigned long curMillis = millis();
   HandleButtons();
-  PrintLCDBottomLine(curMillis / 1000); 
+  //PrintLCDBottomLine(curMillis / 1000); 
+  PrintLCDBottomLine(SonarPingcm()); 
 }
 /// END OF MAIN FUNCTIONS ///
