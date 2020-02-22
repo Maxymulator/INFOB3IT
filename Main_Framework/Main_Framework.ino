@@ -19,6 +19,9 @@ const int LDR_PIN = A4;
 // The motion sensor is plugged in to pin 7
 const int MOTION_PIN = 7;
 
+// The spraying mechanism is plugged in to pin 6
+const int SPRAY_PIN = 6;
+
 // Sonar
 // The Sonar distance sensor is plugged in to pin 8
 const int SONAR_PIN = 8;
@@ -53,6 +56,8 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
   pinMode(LDR_PIN, INPUT);
+  pinMode(MOTION_PIN, INPUT);
+  pinMode(SPRAY_PIN, OUTPUT);
   pinMode(LCD_RS, OUTPUT);
   pinMode(LCD_E, OUTPUT);
   pinMode(LCD_D4, OUTPUT);
@@ -81,8 +86,5 @@ void loop()
   PrintClrLCDBottomLine(SonarPingcm()); 
   IsLightOn();
   HandleMotion();
-  if (curMillis % 5000 < 100){
-    MotionOverThreshold(0.3);
-  }
 }
 /// END OF MAIN FUNCTIONS ///

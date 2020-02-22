@@ -60,6 +60,7 @@ void PerformButtonAction(int button)
       break;
     case 2: // button 2 pressed
       ToggleLEDYlw(); // TEMP for testing
+      Spray();
       PrintClrLCDTopLine("Button 2");
       break;
     case 3: // button 3 pressed
