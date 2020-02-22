@@ -4,7 +4,6 @@
 /// GetTemperature() > returns the current temperature in Celcius
 ///
 
-
 /// EXTERNAL FUNCTIONS ///
 // Return the current temperature
 float GetTemperature()

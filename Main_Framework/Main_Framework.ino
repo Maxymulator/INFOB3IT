@@ -1,3 +1,12 @@
+/// To Do:
+// - Make the spraying mechanism non-blocking
+// - Add EEPROM memory support to keep track of the remaining sprays in the can without power
+// - Reserach interrupts to see if they can be useful in this project
+// - Write a DFA and implement it (using an enum)
+// - Hook up the magnetic doorsensor
+// - Write support for the magnetic doorsensor
+
+
 /// LIBARIES ///
 #include <LiquidCrystal.h> // LCD library
 #include <NewPing.h> // Sonar library
