@@ -16,6 +16,9 @@ const int BUTTON_PIN = A5;
 // The LDR is plugged in to pin A4
 const int LDR_PIN = A4;
 
+// The motion sensor is plugged in to pin 7
+const int MOTION_PIN = 7;
+
 // Sonar
 // The Sonar distance sensor is plugged in to pin 8
 const int SONAR_PIN = 8;
@@ -77,5 +80,9 @@ void loop()
   //PrintLCDBottomLine(curMillis / 1000); 
   PrintClrLCDBottomLine(SonarPingcm()); 
   IsLightOn();
+  HandleMotion();
+  if (curMillis % 5000 < 100){
+    MotionOverThreshold(0.3);
+  }
 }
 /// END OF MAIN FUNCTIONS ///
