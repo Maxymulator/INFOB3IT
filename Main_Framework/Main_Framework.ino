@@ -1,6 +1,8 @@
 /// LIBARIES ///
 #include <LiquidCrystal.h> // LCD library
 #include <NewPing.h> // Sonar library
+#include <OneWire.h> // One Wire library
+#include <DallasTemperature.h> // Temperature sensor library
 /// END OF LIBRARIES ///
 
 /// CONSTANTS ///
@@ -21,6 +23,16 @@ const int MOTION_PIN = 7;
 
 // The spraying mechanism is plugged in to pin 6
 const int SPRAY_PIN = 6;
+
+// One Wire (temperature)
+// The One Wire bus is plugged in to pin 10
+const int ONE_WIRE_PIN = 10;
+
+// Initialize the One Wire bus
+OneWire oneWire(ONE_WIRE_PIN);
+
+// Initialize the temperature sensor
+DallasTemperature tempSensor(&oneWire);
 
 // Sonar
 // The Sonar distance sensor is plugged in to pin 8
@@ -75,6 +87,9 @@ void setup()
   // Turn on the LCD screen
   lcd.begin(16, 2); // width 16px by height 2px
   PrintClrLCDTopLine("Hello World");
+
+  // Start the temperature library
+  tempSensor.begin();
 }
 
 void loop()
@@ -86,5 +101,6 @@ void loop()
   PrintClrLCDBottomLine(SonarPingcm()); 
   IsLightOn();
   HandleMotion();
+  Serial.println(GetTemperature());
 }
 /// END OF MAIN FUNCTIONS ///
