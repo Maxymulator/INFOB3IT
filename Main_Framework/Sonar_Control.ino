@@ -1,6 +1,10 @@
 ///
 /// Sonar control
 ///
+/// SonarPingcm -> Read the current distance
+/// SprayBlocked -> Check if the spraying mechanism is blocked
+/// SonarCheckSitting -> Check if the user is currently sitting
+///
 
 /// EXTERNAL FUNCTIONS ///
 // Read the current distance

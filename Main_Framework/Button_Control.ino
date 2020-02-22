@@ -1,7 +1,6 @@
 ///
 /// Button handling
 ///
-/// External funtions:
 /// HandleButtons() -> read the currently pressed button and perform its corresponding action
 ///
 

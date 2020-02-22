@@ -7,6 +7,7 @@
 /// PrintClrLCDTopLine(message) -> clear the top line and print the given message
 /// PrintClrLCDBottonLine(message) -> clear the bottom line and print the given message
 /// ClearLCD() -> clear the LCD screen
+///
 
 /// EXTERNAL FUNCTIONS ///
 // Print the given string on the given line

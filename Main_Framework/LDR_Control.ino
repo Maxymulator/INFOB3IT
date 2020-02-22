@@ -1,6 +1,8 @@
 ///
 /// LDR control
 ///
+/// IsLightOn() -> Check if the light is turned on in the bathroom
+///
 
 /// EXTERNAL FUNCTIONS ///
 // Check if the light is on
