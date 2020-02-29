@@ -4,6 +4,7 @@
 /// HandleButtons() -> read the currently pressed button and perform its corresponding action
 ///
 
+//
 /// VARIABLES ///
 // previous button state
 int prevButton = 0;
@@ -17,7 +18,9 @@ unsigned long lastDebounceTime = 0;
 // the delay to debounce
 unsigned long debounceDelay = 50;
 /// END OF VARIABLES ///
+//
 
+//
 /// EXTERNAL FUNCTIONS ///
 void HandleButtons()
 {
@@ -47,7 +50,9 @@ void HandleButtons()
   prevButton = reading;
 }
 /// END OF EXTERNAL FUNCTIONS ///
+//
 
+//
 /// INTERNAL FUNCTIONS ///
 // Perform the action of the given button
 void PerformButtonAction(int button)
@@ -56,16 +61,16 @@ void PerformButtonAction(int button)
   {
     case 1: // button 1 pressed
       ToggleLEDBth(); // TEMP for testing
-      PrintClrLCDTopLine("Button 1");
+      PrintClrLCDTopLine(F("Button 1"));
       break;
     case 2: // button 2 pressed
       ToggleLEDYlw(); // TEMP for testing
-      Spray();
-      PrintClrLCDTopLine("Button 2");
+      StartSpray(1);
+      PrintClrLCDTopLine(F("Button 2"));
       break;
     case 3: // button 3 pressed
       ToggleLEDGrn(); // TEMP for testing
-      PrintClrLCDTopLine("Button 3");
+      PrintClrLCDTopLine(F("Button 3"));
       break;
     default: // no buttons pressed
       break;
@@ -101,3 +106,4 @@ int ReadButtons ()
   return button;
 }
 /// END OF INTERNAL FUNCTIONS ///
+//

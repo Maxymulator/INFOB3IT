@@ -13,13 +13,16 @@
 /// ToggleLEDBth() -> toggle both LEDs
 ///
 
+//
 /// VARIABLES ///
 // Bool depicting if the green LED is turned on
 bool ledGrnOn = false;
 // Bool depicting if the yellow LED is turned on
 bool ledYlwOn = false;
 /// END OF VARIABLES ///
+//
 
+//
 /// EXTERNAL COMMANDS ///
 // Turn on the green LED
 void OnLEDGrn()
@@ -87,7 +90,9 @@ void ToggleLEDBth()
   HandleLEDs();
 }
 /// END OF EXTERNAL COMMANDS ///
+//
 
+//
 /// INTERNAL COMMANDS ///
 void HandleLEDs()
 {
@@ -116,3 +121,4 @@ void HandleLEDs()
   }
 }
 /// END OF INTERNAL COMMANDS ///
+//

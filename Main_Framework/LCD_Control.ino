@@ -9,6 +9,7 @@
 /// ClearLCD() -> clear the LCD screen
 ///
 
+//
 /// EXTERNAL FUNCTIONS ///
 // Print the given string on the given line
 void PrintLCD(int line, String s) 
@@ -102,7 +103,9 @@ void ClearLCD()
   lcd.clear();
 }
 /// END OF EXTERNAL FUNCTIONS ///
+//
 
+//
 /// INTERNAL FUNCTIONS ///
 // Clears the given LCD line without touching the other line
 void ClearLCDLine(int line)
@@ -111,3 +114,4 @@ void ClearLCDLine(int line)
   lcd.print(EMPTY_LCD_STRING);
 }
 /// END OF INTERNAL FUNCTIONS ///
+//
