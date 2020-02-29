@@ -2,10 +2,6 @@
 // - Research interrupts to see if they can be useful in this project
 // - Write a DFA
 // - Write support for the magnetic doorsensor
-// - create the menu
-// - implement the initial delay before a spraying cycle
-// - define uses for the buttons
-// - implement the uses for the buttons
 // - implement the DFA
 
 //
@@ -79,15 +75,16 @@ LiquidCrystal lcd(LCD_RS, LCD_E, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 // The enum defining the current state of this cycle
 enum programState
 {
-  state_standbye,      // standbye state
-  state_inuse_unknown, // toilet in use, unsure how
-  state_inuse_one,     // toilet in use, number 1
-  state_inuse_two,     // toilet in use, number 2
-  state_inuse_clean,   // toilet in use, cleaning
-  state_start_spray,   // the system is about to spray
-  state_spraying,      // the system is currently spraying
-  state_menu,          // operator menu active
-  state_test           // state for testing purposes
+  state_standbye,        // standbye state
+  state_inuse_unknown,   // toilet in use, unsure how
+  state_inuse_one,       // toilet in use, number 1
+  state_inuse_two,       // toilet in use, number 2
+  state_inuse_clean,     // toilet in use, cleaning
+  state_start_spray_one, // the system is about to spray once
+  state_start_spray_two, // the system is about to spray twice
+  state_spraying,        // the system is currently spraying
+  state_menu,            // operator menu active
+  state_test             // state for testing purposes
 };
 /// <END OF CONSTANTS ///
 //
@@ -95,10 +92,7 @@ enum programState
 //
 /// VARIABLES ///
 // the current state of this cycle
-programState currentState = state_start_spray;
-
-// the previous state of this cycle
-programState previousState = state_standbye;
+programState currentState = state_standbye;
 /// END OF VARIABLES ///
 //
 
@@ -138,73 +132,69 @@ void setup()
 
   // Initialize the spraycount
   InitSpraycount();
-
-  delay(2000);
 }
 
 void loop()
 {
   // put your main code here, to run repeatedly:
-  unsigned long curMillis = millis();
-  HandleButtons();
-  //PrintLCDBottomLine(curMillis / 1000); 
-  PrintClrLCDBottomLine(SonarPingcm()); 
-  IsLightOn();
   HandleMotion();
-  Serial.println(GetTemperature());
-  Serial.println(digitalRead(FLUSH_PIN));
 
   switch (currentState)
   {
     case state_standbye:
-    {
-      HandleStandbye();
-      break;
-    }
+      {
+        HandleStandbye();
+        break;
+      }
     case state_inuse_unknown:
-    {
-      HandleInUseUnknown();
-      break;
-    }
+      {
+        HandleInUseUnknown();
+        break;
+      }
     case state_inuse_one:
-    {
-      HandleInUneOne();
-      break;
-    }
+      {
+        HandleInUneOne();
+        break;
+      }
     case state_inuse_two:
-    {
-      HandleInUseTwo();
-      break;
-    }
+      {
+        HandleInUseTwo();
+        break;
+      }
     case state_inuse_clean:
-    {
-      HandleCleaning();
-      break;
-    }
-    case state_start_spray:
-    {
-      HandleStartSpray();
-      break;
-    }
+      {
+        HandleCleaning();
+        break;
+      }
+    case state_start_spray_one:
+      {
+        HandleStartSpray(1);
+        break;
+      }
+    case state_start_spray_two:
+      {
+        HandleStartSpray(2);
+        break;
+      }
     case state_spraying:
-    {
-      HandleSpraying();
-      break;
-    }
+      {
+        HandleSpraying();
+        break;
+      }
     case state_menu:
-    {
-      HandleMenu();
-      break;
-    }
+      {
+        HandleMenu();
+        break;
+      }
     case state_test:
-    {
-      HandleTest();
-      break;
-    }
+      {
+        HandleTest();
+        break;
+      }
     default:
-    {
-      break;
-    }
+      {
+        break;
+      }
   }
 }
 /// END OF MAIN FUNCTIONS ///
@@ -215,39 +205,43 @@ void loop()
 // handle the standbye state
 void HandleStandbye()
 {
-  ToggleLEDGrn();
-  delay(500);
+  HandleButtons();
+  PrintLCDTopLine(F("Standbye        "));
+  OffLEDGrn();
 }
 
 // handle the unknown use state
 void HandleInUseUnknown()
 {
-  
+  HandleButtons();
+
 }
 
 // handle the number 1 state
 void HandleInUneOne()
 {
-  
+  HandleButtons();
+
 }
 
 // handle the number 2 state
 void HandleInUseTwo()
 {
-  
+  HandleButtons();
+
 }
 
 // handle the cleaning state
 void HandleCleaning()
 {
-  
+  HandleButtons();
+
 }
 
 // handle the 'about to spray' state
-void HandleStartSpray()
+void HandleStartSpray(int count)
 {
-  StartSpray(2);
-  previousState = currentState;
+  StartSpray(count);
   currentState = state_spraying;
 }
 
@@ -256,21 +250,22 @@ void HandleSpraying()
 {
   if (Spray())
   {
-    //previousState = currentState;
-    //currentState = state_standbye;
+    ClearLCD();
+    currentState = state_standbye;
   }
 }
 
 // handle the menu state
 void HandleMenu()
 {
-   
+  HandleButtons();
+  PrintMenu();
 }
 
 // handle the testing state
 void HandleTest()
 {
-  
+  HandleButtons();
 }
 /// END OF STATE HANDLING ///
 //

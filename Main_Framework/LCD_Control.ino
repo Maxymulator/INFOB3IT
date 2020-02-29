@@ -100,7 +100,8 @@ void PrintClrLCDBottomLine(unsigned long s)
 // Clears the LCD screen
 void ClearLCD()
 {
-  lcd.clear();
+  ClearLCDLine(0);
+  ClearLCDLine(1);
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //

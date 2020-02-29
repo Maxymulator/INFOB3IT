@@ -5,6 +5,13 @@
 ///
 
 //
+/// CONSTANTS ///
+// the delay to debounce
+const unsigned long debounceDelay = 50;
+/// END OF CONSTANTS ///
+//
+
+//
 /// VARIABLES ///
 // previous button state
 int prevButton = 0;
@@ -14,9 +21,6 @@ int curButton = 0;
 
 // time of the last debounce check
 unsigned long lastDebounceTime = 0;
-
-// the delay to debounce
-unsigned long debounceDelay = 50;
 /// END OF VARIABLES ///
 //
 
@@ -26,24 +30,31 @@ void HandleButtons()
 {
   // the current reading of the buttons
   int reading = ReadButtons();
-  
+
   // check if the button has changed, due to noise or pressing
-  if( curButton != prevButton)
+  if ( curButton != prevButton)
   {
     // reset the debouncing timer
     lastDebounceTime = millis();
   }
 
   // check if you are on the debouncing delay
-  if( (millis() - lastDebounceTime) > debounceDelay)
+  if ( (millis() - lastDebounceTime) > debounceDelay)
   {
     // check if the buttonstate has actually changed
-    if(reading != curButton)
+    if (reading != curButton)
     {
       // update the current buttonstate
       curButton = reading;
       // perform the action corresponding to the current button
-      PerformButtonAction(curButton);
+      if(currentState == state_menu)
+      {
+        PerformButtonMenu(curButton);
+      }
+      else
+      {
+        PerformButtonAction(curButton);
+      }
     }
   }
   // update the previous buttonstate
@@ -59,19 +70,51 @@ void PerformButtonAction(int button)
 {
   switch (button)
   {
-    case 1: // button 1 pressed
-      ToggleLEDBth(); // TEMP for testing
-      PrintClrLCDTopLine(F("Button 1"));
+    case 1: // button 1 pressed: spray
+      {
+        currentState = state_start_spray_one;
+        //PrintClrLCDTopLine(F("Button 1"));
+        break;
+      }
+    case 2: // button 2 pressed: enter menu
+      {
+        currentState = state_menu;
+        //PrintClrLCDTopLine(F("Button 2"));
+        break;
+      }
+    case 3: // button 3 pressed: do nothing
+      {
+        //PrintClrLCDTopLine(F("Button 3"));
+        break;
+      }
+    default: // no buttons pressed
       break;
-    case 2: // button 2 pressed
-      ToggleLEDYlw(); // TEMP for testing
-      StartSpray(1);
-      PrintClrLCDTopLine(F("Button 2"));
+  }
+}
+
+// Perform the action of the given button in menu state
+void PerformButtonMenu(int button)
+{
+  switch (button)
+  {
+    case 1: // button 1 pressed: spray
+    {
+      currentState = state_start_spray_one;
+      //PrintClrLCDTopLine(F("Button 1 M"));
       break;
-    case 3: // button 3 pressed
-      ToggleLEDGrn(); // TEMP for testing
-      PrintClrLCDTopLine(F("Button 3"));
+    }
+    case 2: // button 2 pressed: cycle menu option
+    {
+      CycleMenuState();
+      //PrintClrLCDTopLine(F("Button 2 M"));
       break;
+    }
+    case 3: // button 3 pressed: interact menu option
+    {
+      ConfirmMenu();
+      //PrintClrLCDTopLine(F("Button 3 M"));
+      break;
+    }
     default: // no buttons pressed
       break;
   }
@@ -82,7 +125,7 @@ int ReadButtons ()
 {
   // the button currently pressed
   int button;
-  
+
   // read the current on the button pin
   int reading = analogRead(BUTTON_PIN);
 

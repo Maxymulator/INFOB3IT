@@ -4,12 +4,17 @@
 /// Spray() -> Spray once
 /// StartSpray(int count) -> Spray a given amount of times
 /// InitSpraycount() -> Read the sprays remaining from memory
+/// ResetSprayCount() -> Resets the remaining sprays in this can
+/// GetSprayDelay() -> Gets the current spray delay
 ///
 
 //
 /// CONSTANTS ///
 // The delay needed to allow for the spray to happen, but not burn the motor
 const unsigned long sprayMotorDelay = 1000;
+
+// The interval at which the LED blinks before a spray
+const unsigned long ledBlinkInterval = 250;
 /// END OF CONSTANTS ///
 //
 
@@ -30,6 +35,9 @@ unsigned long sprayCommandTime = 0;
 // The delay before a spray
 unsigned long sprayDelay = 2000;
 
+// The last time the yellow led was altered
+unsigned long prevLED = 0;
+
 // The current state of the spraying mechanism
 int sprayState = LOW;
 /// END OF VARIABLES ///
@@ -40,11 +48,12 @@ int sprayState = LOW;
 // Spray once
 bool Spray()
 {
+  unsigned long curMillis = millis();
   if (spraysRemaining <= 0) // Check if there are no sprays remaining this cycle
   {
     return true; // done spraying
   }
-  if (millis() - sprayCommandTime > sprayDelay) // Wait for the initial delay
+  if (curMillis - sprayCommandTime > sprayDelay) // Wait for the initial delay
   {
     if (sprayState == LOW)
     {
@@ -52,7 +61,7 @@ bool Spray()
       OnLEDYlw();
 
       // Store the current time as the starting time of this spray
-      sprayStartTime = millis();
+      sprayStartTime = curMillis;
 
       // Set the sprayState to high, denoting that we are currently spraying
       sprayState = HIGH;
@@ -60,7 +69,7 @@ bool Spray()
       // Spray
       digitalWrite(SPRAY_PIN, HIGH);
     }
-    else if (millis() - sprayStartTime > sprayMotorDelay) // Wait for the motor delay
+    else if (curMillis - sprayStartTime > sprayMotorDelay) // Wait for the motor delay
     {
       // Stop spraying
       digitalWrite(SPRAY_PIN, LOW);
@@ -81,7 +90,15 @@ bool Spray()
       EEPROM.put(0, sprayCountRemaining);
 
       // Set the command time to the current time to initiate the delay for possible further sprays
-      sprayCommandTime = millis();
+      sprayCommandTime = curMillis;
+    }
+  }
+  else
+  {
+    if (curMillis - prevLED > ledBlinkInterval)
+    {
+      ToggleLEDYlw();
+      prevLED = curMillis;
     }
   }
   return false; // not done spraying yet
@@ -116,6 +133,19 @@ void CycleSprayDelay()
     sprayDelay = 1000;
   }
 }
+
+// Resets the remaining sprays in this can
+void ResetSprayCount()
+{
+  sprayCountRemaining = 2400;
+  EEPROM.put(0, sprayCountRemaining);
+}
+
+// Gets the current spray delay
+unsigned long GetSprayDelay()
+{
+  return sprayDelay;
+}
 /// END OF EXTERNAL FUNCTIONS ///
 //
 
@@ -125,13 +155,6 @@ void CycleSprayDelay()
 void LowerSprayCount()
 {
   sprayCountRemaining -= 1;
-}
-
-// Resets the remaining sprays in this can
-void ResetSprayCount()
-{
-  sprayCountRemaining = 2400;
-  EEPROM.put(0, sprayCountRemaining);
 }
 /// END OF INTERNAL FUNCTIONS ///
 //
