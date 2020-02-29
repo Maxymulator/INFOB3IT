@@ -2,10 +2,8 @@
 /// LCD Control
 ///
 /// PrintLCD(line, message) -> print the given message on the given line
-/// PrintLCDTopLine(message) -> print the given message on the top line
-/// PrintLCDBottonLine(message) -> print the given message on the bottom line
-/// PrintClrLCDTopLine(message) -> clear the top line and print the given message
-/// PrintClrLCDBottonLine(message) -> clear the bottom line and print the given message
+/// PrintLCDTopLine(message) -> clear the top line and print the given message
+/// PrintLCDBottonLine(message) -> clear the bottom line and print the given message
 /// ClearLCD() -> clear the LCD screen
 ///
 
@@ -19,102 +17,56 @@ void PrintLCD(int line, String s)
   lcd.print(s);
 }
 
-// Print the given message on the top line, seperate from the bottom line
-// overloaded for String, int, unsigned long, float
-void PrintLCDTopLine(String s)
-{
-  lcd.setCursor(0, 0);
-  lcd.print(s);
-}
-void PrintLCDTopLine(int s)
-{
-  lcd.setCursor(0, 0);
-  lcd.print(s);
-}
-void PrintLCDTopLine(unsigned long s)
-{
-  lcd.setCursor(0, 0);
-  lcd.print(s);
-}
-void PrintLCDTopLine(float s)
-{
-  lcd.setCursor(0, 0);
-  lcd.print(s);
-}
-
 // Clear the top line and print the given message on the top line, seperate from the bottom line
 // overloaded for String, int, unsigned long, float
-void PrintClrLCDTopLine(String s)
+void PrintLCDTopLine(String input)
 {
-  ClearLCDLine(0);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 0);
   lcd.print(s);
 }
-void PrintClrLCDTopLine(int s)
+void PrintLCDTopLine(int input)
 {
-  ClearLCDLine(0);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 0);
   lcd.print(s);
 }
-void PrintClrLCDTopLine(unsigned long s)
+void PrintLCDTopLine(unsigned long input)
 {
-  ClearLCDLine(0);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 0);
   lcd.print(s);
 }
-void PrintClrLCDTopLine(float s)
+void PrintLCDTopLine(float input)
 {
-  ClearLCDLine(0);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 0);
-  lcd.print(s);
-}
-
-// Print the given message on the bottom line, seperate from the top line
-// overloaded for String, int, unsigned long, float
-void PrintLCDBottomLine(String s)
-{
-  lcd.setCursor(0, 1);
-  lcd.print(s);
-}
-void PrintLCDBottomLine(int s)
-{
-  lcd.setCursor(0, 1);
-  lcd.print(s);
-}
-void PrintLCDBottomLine(unsigned long s)
-{
-  lcd.setCursor(0, 1);
-  lcd.print(s);
-}
-void PrintLCDBottomLine(float s)
-{
-  lcd.setCursor(0, 1);
   lcd.print(s);
 }
 
 // Clear the bottom line and print the given message on the bottom line, seperate from the top line
 // overloaded for String, int, unsigned long, float
-void PrintClrLCDBottomLine(String s)
+void PrintLCDBottomLine(String input)
 {
-  ClearLCDLine(1);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 1);
   lcd.print(s);
 }
-void PrintClrLCDBottomLine(int s)
+void PrintLCDBottomLine(int input)
 {
-  ClearLCDLine(1);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 1);
   lcd.print(s);
 }
-void PrintClrLCDBottomLine(unsigned long s)
+void PrintLCDBottomLine(unsigned long input)
 {
-  ClearLCDLine(1);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 1);
   lcd.print(s);
 }
-void PrintClrLCDBottomLine(float s)
+void PrintLCDBottomLine(float input)
 {
-  ClearLCDLine(1);
+  String s = input + EMPTY_LCD_STRING;
   lcd.setCursor(0, 1);
   lcd.print(s);
 }

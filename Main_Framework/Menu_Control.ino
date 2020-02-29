@@ -64,7 +64,7 @@ void PrintMenu()
     case 1: // Cycle the spray delay
     {
       PrintLCDTopLine(F("Cycle spraydelay"));
-      PrintClrLCDBottomLine(GetSprayDelay() / 1000);
+      PrintLCDBottomLine(GetSprayDelay() / 1000);
       break;
     }
     case 2: // Exit the menu

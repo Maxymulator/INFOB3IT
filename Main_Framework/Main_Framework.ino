@@ -294,12 +294,12 @@ void PrintStdDisplay()
   if(stdDisplayState)
   {
     PrintLCDTopLine(F("Sprays remaining"));
-    PrintClrLCDBottomLine(GetSprayCount());
+    PrintLCDBottomLine(GetSprayCount());
   }
   else
   {
     PrintLCDTopLine(F("Room temperature"));
-    PrintClrLCDBottomLine(GetTemperature());
+    PrintLCDBottomLine(GetTemperature());
   }
 }
 
