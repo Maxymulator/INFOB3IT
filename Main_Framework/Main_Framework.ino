@@ -1,22 +1,19 @@
 /// To Do:
-// - Research interrupts to see if they can be useful in this project
 // - Write a DFA
-// - Write support for the magnetic doorsensor
 // - implement the DFA
-// - implement the regular use display
 
 //
-/// LIBARIES \\\
+/// LIBARIES ///
 #include <LiquidCrystal.h> // LCD library
 #include <NewPing.h> // Sonar library
 #include <OneWire.h> // One Wire library
 #include <DallasTemperature.h> // Temperature sensor library
 #include <EEPROM.h> // EEPROM memory library
-/// END OF LIBRARIES \\\
+/// END OF LIBRARIES ///
 //
 
 //
-/// CONSTANTS \\\
+/// CONSTANTS ///
 // The midway point for PMW
 const int PMW_MID = 128;
 
@@ -36,7 +33,7 @@ const int MOTION_PIN = 7;
 const int SPRAY_PIN = 13;
 
 // The magnetic flush sensor is plugged in to pin 6
-const int FLUSH_PIN = 6;
+const int FLUSH_PIN = 2;
 
 // One Wire (temperature)
 // The One Wire bus is plugged in to pin 10
@@ -65,7 +62,7 @@ const int LCD_E = 11;
 const int LCD_D4 = 5;
 const int LCD_D5 = 4;
 const int LCD_D6 = 3;
-const int LCD_D7 = 2;
+const int LCD_D7 = 6;
 
 // The empty string for the lcd screen
 const String EMPTY_LCD_STRING = "                ";
@@ -76,7 +73,7 @@ LiquidCrystal lcd(LCD_RS, LCD_E, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 // The enum defining the current state of this cycle
 enum programState
 {
-  state_standbye,        // standbye state
+  state_standby,         // standby state
   state_inuse_unknown,   // toilet in use, unsure how
   state_inuse_one,       // toilet in use, number 1
   state_inuse_two,       // toilet in use, number 2
@@ -87,18 +84,24 @@ enum programState
   state_menu,            // operator menu active
   state_test             // state for testing purposes
 };
-/// <END OF CONSTANTS \\\
+/// <END OF CONSTANTS ///
 //
 
 //
-/// VARIABLES \\\
+/// VARIABLES ///
 // the current state of this cycle
-programState currentState = state_standbye;
-/// END OF VARIABLES \\\
+volatile programState currentState = state_inuse_two;
+
+// The current state of the standard display
+bool stdDisplayState = true;
+
+// The last time the standard display toggled
+unsigned long prevStdDisplayToggle = 0;
+/// END OF VARIABLES ///
 //
 
 //
-/// MAIN FUNCTIONS \\\
+/// MAIN FUNCTIONS ///
 void setup()
 {
   // put your setup code here, to run once:
@@ -116,23 +119,21 @@ void setup()
   pinMode(LCD_D6, OUTPUT);
   pinMode(LCD_D7, OUTPUT);
 
-  // Other setup:
-  // Turn on the power LED:
-  OnLEDGrn();
-
   // Turn on the serial monitor on port 9600
   Serial.begin(9600);
 
   // Turn on the LCD screen
   lcd.begin(16, 2); // width 16px by height 2px
   lcd.clear();
-  PrintClrLCDTopLine(F("Hello World"));
 
   // Start the temperature library
   tempSensor.begin();
 
   // Initialize the spraycount
   InitSpraycount();
+
+  // Attach the interrupt to the flushing mechanism
+  attachInterrupt(digitalPinToInterrupt(FLUSH_PIN), HandleFlushInterrupt, RISING);
 }
 
 void loop()
@@ -142,7 +143,7 @@ void loop()
 
   switch (currentState)
   {
-    case state_standbye:
+    case state_standby:
       {
         HandleStandbye();
         break;
@@ -198,16 +199,17 @@ void loop()
       }
   }
 }
-/// END OF MAIN FUNCTIONS \\\
+/// END OF MAIN FUNCTIONS ///
 //
 
 //
-/// STATE HANDLING \\\
-// handle the standbye state
+/// STATE HANDLING ///
+// handle the standby state
 void HandleStandbye()
 {
   HandleButtons();
-  PrintLCDTopLine(F("Standbye        "));
+  PrintLCDTopLine(F("  System is in  "));
+  PrintLCDBottomLine(F("  standby mode  "));
   OffLEDGrn();
 }
 
@@ -215,13 +217,15 @@ void HandleStandbye()
 void HandleInUseUnknown()
 {
   HandleButtons();
-
+  HandleStdDisplay();
+  OnLEDGrn();
 }
 
 // handle the number 1 state
 void HandleInUneOne()
 {
   HandleButtons();
+  HandleStdDisplay();
 
 }
 
@@ -229,6 +233,7 @@ void HandleInUneOne()
 void HandleInUseTwo()
 {
   HandleButtons();
+  HandleStdDisplay();
 
 }
 
@@ -236,12 +241,14 @@ void HandleInUseTwo()
 void HandleCleaning()
 {
   HandleButtons();
+  HandleStdDisplay();
 
 }
 
 // handle the 'about to spray' state
 void HandleStartSpray(int count)
 {
+  ClearLCD();
   StartSpray(count);
   currentState = state_spraying;
 }
@@ -252,7 +259,7 @@ void HandleSpraying()
   if (Spray())
   {
     ClearLCD();
-    currentState = state_standbye;
+    currentState = state_standby;
   }
 }
 
@@ -267,12 +274,45 @@ void HandleMenu()
 void HandleTest()
 {
   HandleButtons();
+  HandleStdDisplay();
+  
 }
-/// END OF STATE HANDLING \\\
+/// END OF STATE HANDLING ///
 //
 
 //
-/// INTERNAL FUNCTIONS \\\
+/// INTERNAL FUNCTIONS ///
+// Toggles the standard display
+void ToggleStdDisplay()
+{
+  stdDisplayState = !stdDisplayState;
+}
 
-/// END OF INTERNAL FUNCTIONS \\\
+// Print the standard display to the LCD
+void PrintStdDisplay()
+{
+  if(stdDisplayState)
+  {
+    PrintLCDTopLine(F("Sprays remaining"));
+    PrintClrLCDBottomLine(GetSprayCount());
+  }
+  else
+  {
+    PrintLCDTopLine(F("Room temperature"));
+    PrintClrLCDBottomLine(GetTemperature());
+  }
+}
+
+// Handles the standard display
+void HandleStdDisplay()
+{
+  if(millis() - prevStdDisplayToggle > 2000)
+  {
+    ToggleStdDisplay();
+    prevStdDisplayToggle = millis();
+  }
+  
+  PrintStdDisplay();
+}
+/// END OF INTERNAL FUNCTIONS ///
 //

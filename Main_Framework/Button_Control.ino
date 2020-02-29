@@ -5,14 +5,14 @@
 ///
 
 //
-/// CONSTANTS \\\
+/// CONSTANTS ///
 // the delay to debounce
 const unsigned long debounceDelay = 50;
-/// END OF CONSTANTS \\\
+/// END OF CONSTANTS ///
 //
 
 //
-/// VARIABLES \\\
+/// VARIABLES ///
 // previous button state
 int prevButton = 0;
 
@@ -21,11 +21,11 @@ int curButton = 0;
 
 // time of the last debounce check
 unsigned long lastDebounceTime = 0;
-/// END OF VARIABLES \\\
+/// END OF VARIABLES ///
 //
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 void HandleButtons()
 {
   // the current reading of the buttons
@@ -60,31 +60,40 @@ void HandleButtons()
   // update the previous buttonstate
   prevButton = reading;
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+/// END OF EXTERNAL FUNCTIONS ///
 //
 
 //
-/// INTERNAL FUNCTIONS \\\
+/// INTERNAL FUNCTIONS ///
 // Perform the action of the given button
 void PerformButtonAction(int button)
 {
+  // Clear the LCD
+  ClearLCD();
+
+  // Handle the given button
   switch (button)
   {
     case 1: // button 1 pressed: spray
       {
         currentState = state_start_spray_one;
-        //PrintClrLCDTopLine(F("Button 1"));
         break;
       }
     case 2: // button 2 pressed: enter menu
       {
         currentState = state_menu;
-        //PrintClrLCDTopLine(F("Button 2"));
         break;
       }
-    case 3: // button 3 pressed: do nothing
+    case 3: // button 3 pressed: Power button
       {
-        //PrintClrLCDTopLine(F("Button 3"));
+        if (currentState == state_standby)
+        {
+          currentState = state_inuse_unknown;
+        }
+        else
+        {
+          currentState = state_standby;
+        }
         break;
       }
     default: // no buttons pressed
@@ -95,24 +104,25 @@ void PerformButtonAction(int button)
 // Perform the action of the given button in menu state
 void PerformButtonMenu(int button)
 {
+  // Clear the LCD
+  ClearLCD();
+
+  // Handle the given button
   switch (button)
   {
     case 1: // button 1 pressed: spray
     {
       currentState = state_start_spray_one;
-      //PrintClrLCDTopLine(F("Button 1 M"));
       break;
     }
     case 2: // button 2 pressed: cycle menu option
     {
       CycleMenuState();
-      //PrintClrLCDTopLine(F("Button 2 M"));
       break;
     }
     case 3: // button 3 pressed: interact menu option
     {
       ConfirmMenu();
-      //PrintClrLCDTopLine(F("Button 3 M"));
       break;
     }
     default: // no buttons pressed
@@ -148,5 +158,5 @@ int ReadButtons ()
   }
   return button;
 }
-/// END OF INTERNAL FUNCTIONS \\\
+/// END OF INTERNAL FUNCTIONS ///
 //

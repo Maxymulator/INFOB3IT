@@ -8,14 +8,14 @@
 ///
 
 //
-/// CONSTANTS \\\
+/// CONSTANTS ///
 // The needed delay after the sensor stops sensing motion
 int motionDelay = 2000; // 2 seconds
-/// END OF CONSTANTS\\\
+/// END OF CONSTANTS///
 //
 
 //
-/// VARIABLES \\\
+/// VARIABLES ///
 // The last time the motion sensor triggered
 unsigned long motionPrevTrigger = 0;
 
@@ -27,11 +27,11 @@ double motionTotal = 0;
 
 // The total amount of motion check calls
 double motionCount = 0;
-/// END OF VARIABLES \\\
+/// END OF VARIABLES ///
 //
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 // Check if motion has been detected in the last 5 seconds.
 bool IsMotionDetected()
 {
@@ -70,5 +70,5 @@ bool SufficientMotion()
 {
   return MotionOverThreshold(0.7); //from testing 0.7 seems to be a decent threshold for cleaning
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+/// END OF EXTERNAL FUNCTIONS ///
 //

@@ -10,7 +10,7 @@
 ///
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 // Print the given string on the given line
 void PrintLCD(int line, String s) 
 {
@@ -20,7 +20,7 @@ void PrintLCD(int line, String s)
 }
 
 // Print the given message on the top line, seperate from the bottom line
-// overloaded for String, int, unsigned long
+// overloaded for String, int, unsigned long, float
 void PrintLCDTopLine(String s)
 {
   lcd.setCursor(0, 0);
@@ -36,9 +36,14 @@ void PrintLCDTopLine(unsigned long s)
   lcd.setCursor(0, 0);
   lcd.print(s);
 }
+void PrintLCDTopLine(float s)
+{
+  lcd.setCursor(0, 0);
+  lcd.print(s);
+}
 
 // Clear the top line and print the given message on the top line, seperate from the bottom line
-// overloaded for String, int, unsigned long
+// overloaded for String, int, unsigned long, float
 void PrintClrLCDTopLine(String s)
 {
   ClearLCDLine(0);
@@ -57,9 +62,15 @@ void PrintClrLCDTopLine(unsigned long s)
   lcd.setCursor(0, 0);
   lcd.print(s);
 }
+void PrintClrLCDTopLine(float s)
+{
+  ClearLCDLine(0);
+  lcd.setCursor(0, 0);
+  lcd.print(s);
+}
 
 // Print the given message on the bottom line, seperate from the top line
-// overloaded for String, int, unsigned long
+// overloaded for String, int, unsigned long, float
 void PrintLCDBottomLine(String s)
 {
   lcd.setCursor(0, 1);
@@ -75,9 +86,14 @@ void PrintLCDBottomLine(unsigned long s)
   lcd.setCursor(0, 1);
   lcd.print(s);
 }
+void PrintLCDBottomLine(float s)
+{
+  lcd.setCursor(0, 1);
+  lcd.print(s);
+}
 
 // Clear the bottom line and print the given message on the bottom line, seperate from the top line
-// overloaded for String, int, unsigned long
+// overloaded for String, int, unsigned long, float
 void PrintClrLCDBottomLine(String s)
 {
   ClearLCDLine(1);
@@ -96,6 +112,12 @@ void PrintClrLCDBottomLine(unsigned long s)
   lcd.setCursor(0, 1);
   lcd.print(s);
 }
+void PrintClrLCDBottomLine(float s)
+{
+  ClearLCDLine(1);
+  lcd.setCursor(0, 1);
+  lcd.print(s);
+}
 
 // Clears the LCD screen
 void ClearLCD()
@@ -103,16 +125,16 @@ void ClearLCD()
   ClearLCDLine(0);
   ClearLCDLine(1);
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+/// END OF EXTERNAL FUNCTIONS ///
 //
 
 //
-/// INTERNAL FUNCTIONS \\\
+/// INTERNAL FUNCTIONS ///
 // Clears the given LCD line without touching the other line
 void ClearLCDLine(int line)
 {
   lcd.setCursor(0, line);
   lcd.print(EMPTY_LCD_STRING);
 }
-/// END OF INTERNAL FUNCTIONS \\\
+/// END OF INTERNAL FUNCTIONS ///
 //

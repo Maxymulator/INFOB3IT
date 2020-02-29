@@ -6,20 +6,21 @@
 /// InitSpraycount() -> Read the sprays remaining from memory
 /// ResetSprayCount() -> Resets the remaining sprays in this can
 /// GetSprayDelay() -> Gets the current spray delay
+/// GetSprayCount() -> Gets the remaining sprays in this can
 ///
 
 //
-/// CONSTANTS \\\
+/// CONSTANTS ///
 // The delay needed to allow for the spray to happen, but not burn the motor
 const unsigned long sprayMotorDelay = 1000;
 
 // The interval at which the LED blinks before a spray
 const unsigned long ledBlinkInterval = 250;
-/// END OF CONSTANTS \\\
+/// END OF CONSTANTS ///
 //
 
 //
-/// VARIABLES \\\
+/// VARIABLES ///
 // The amount of sprays remaining in this can
 int sprayCountRemaining;
 
@@ -40,11 +41,11 @@ unsigned long prevLED = 0;
 
 // The current state of the spraying mechanism
 int sprayState = LOW;
-/// END OF VARIABLES \\\
+/// END OF VARIABLES ///
 //
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 // Spray once
 bool Spray()
 {
@@ -89,12 +90,16 @@ bool Spray()
       // Store the spray count in the EEPROM on adress 0
       EEPROM.put(0, sprayCountRemaining);
 
+      // Clear the LCD
+      ClearLCD();
+
       // Set the command time to the current time to initiate the delay for possible further sprays
       sprayCommandTime = curMillis;
     }
   }
   else
   {
+    HandleImminentSprayingMessage(curMillis);
     if (curMillis - prevLED > ledBlinkInterval)
     {
       ToggleLEDYlw();
@@ -146,15 +151,29 @@ unsigned long GetSprayDelay()
 {
   return sprayDelay;
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+
+// Gets the remaining sprays in this can
+int GetSprayCount()
+{
+  return sprayCountRemaining;
+}
+
+// Handles the "imminent spray" message
+void HandleImminentSprayingMessage(unsigned long curMillis)
+{
+  PrintLCDTopLine("Spraying in:    ");
+  unsigned long timeRemaining = sprayDelay - (curMillis - sprayCommandTime);
+  PrintLCDBottomLine((timeRemaining / 1000));
+}
+/// END OF EXTERNAL FUNCTIONS ///
 //
 
 //
-/// INTERNAL FUNCTIONS \\\
+/// INTERNAL FUNCTIONS ///
 // Lower the remaining sprays in this can
 void LowerSprayCount()
 {
   sprayCountRemaining -= 1;
 }
-/// END OF INTERNAL FUNCTIONS \\\
+/// END OF INTERNAL FUNCTIONS ///
 //

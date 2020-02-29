@@ -7,14 +7,14 @@
 ///
 
 //
-/// VARIABLES \\\
+/// VARIABLES ///
 // The current state of the menu
 int menuState = 0;
-/// END OF VARIABLES \\\
+/// END OF VARIABLES ///
 //
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 // Cycle the current menu
 void CycleMenuState()
 {
@@ -44,7 +44,7 @@ void ConfirmMenu()
     {
       menuState = 0;
       ClearLCD();
-      currentState = state_standbye;
+      currentState = state_standby;
       break;
     }
   }
@@ -64,7 +64,7 @@ void PrintMenu()
     case 1: // Cycle the spray delay
     {
       PrintLCDTopLine(F("Cycle spraydelay"));
-      PrintClrLCDBottomLine(GetSprayDelay());
+      PrintClrLCDBottomLine(GetSprayDelay() / 1000);
       break;
     }
     case 2: // Exit the menu
@@ -75,5 +75,5 @@ void PrintMenu()
     }
   }
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+/// END OF EXTERNAL FUNCTIONS ///
 //

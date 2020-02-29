@@ -7,7 +7,7 @@
 ///
 
 //
-/// EXTERNAL FUNCTIONS \\\
+/// EXTERNAL FUNCTIONS ///
 // Read the current distance
 int SonarPingcm()
 {
@@ -26,5 +26,5 @@ bool SonarCheckSitting(int distance)
 {
   return (distance < 40); // check if anything is closer then 40 cm
 }
-/// END OF EXTERNAL FUNCTIONS \\\
+/// END OF EXTERNAL FUNCTIONS ///
 //
