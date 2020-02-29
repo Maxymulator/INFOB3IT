@@ -7,14 +7,14 @@
 ///
 
 //
-/// VARIABLES ///
+/// VARIABLES \\\
 // The current state of the menu
 int menuState = 0;
-/// END OF VARIABLES ///
+/// END OF VARIABLES \\\
 //
 
 //
-/// EXTERNAL FUNCTIONS ///
+/// EXTERNAL FUNCTIONS \\\
 // Cycle the current menu
 void CycleMenuState()
 {
@@ -75,5 +75,5 @@ void PrintMenu()
     }
   }
 }
-/// END OF EXTERNAL FUNCTIONS ///
+/// END OF EXTERNAL FUNCTIONS \\\
 //

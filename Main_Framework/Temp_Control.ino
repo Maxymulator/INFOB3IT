@@ -5,7 +5,7 @@
 ///
 
 //
-/// EXTERNAL FUNCTIONS ///
+/// EXTERNAL FUNCTIONS \\\
 // Return the current temperature
 float GetTemperature()
 {
@@ -25,5 +25,5 @@ float GetTemperature()
     return 1000; // return an arbitrarily large number to signify an error
   }
 }
-/// END OF EXTERNAL FUNCTIONS ///
+/// END OF EXTERNAL FUNCTIONS \\\
 //

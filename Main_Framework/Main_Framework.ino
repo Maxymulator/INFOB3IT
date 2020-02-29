@@ -3,19 +3,20 @@
 // - Write a DFA
 // - Write support for the magnetic doorsensor
 // - implement the DFA
+// - implement the regular use display
 
 //
-/// LIBARIES ///
+/// LIBARIES \\\
 #include <LiquidCrystal.h> // LCD library
 #include <NewPing.h> // Sonar library
 #include <OneWire.h> // One Wire library
 #include <DallasTemperature.h> // Temperature sensor library
 #include <EEPROM.h> // EEPROM memory library
-/// END OF LIBRARIES ///
+/// END OF LIBRARIES \\\
 //
 
 //
-/// CONSTANTS ///
+/// CONSTANTS \\\
 // The midway point for PMW
 const int PMW_MID = 128;
 
@@ -86,18 +87,18 @@ enum programState
   state_menu,            // operator menu active
   state_test             // state for testing purposes
 };
-/// <END OF CONSTANTS ///
+/// <END OF CONSTANTS \\\
 //
 
 //
-/// VARIABLES ///
+/// VARIABLES \\\
 // the current state of this cycle
 programState currentState = state_standbye;
-/// END OF VARIABLES ///
+/// END OF VARIABLES \\\
 //
 
 //
-/// MAIN FUNCTIONS ///
+/// MAIN FUNCTIONS \\\
 void setup()
 {
   // put your setup code here, to run once:
@@ -197,11 +198,11 @@ void loop()
       }
   }
 }
-/// END OF MAIN FUNCTIONS ///
+/// END OF MAIN FUNCTIONS \\\
 //
 
 //
-/// STATE HANDLING ///
+/// STATE HANDLING \\\
 // handle the standbye state
 void HandleStandbye()
 {
@@ -267,5 +268,11 @@ void HandleTest()
 {
   HandleButtons();
 }
-/// END OF STATE HANDLING ///
+/// END OF STATE HANDLING \\\
+//
+
+//
+/// INTERNAL FUNCTIONS \\\
+
+/// END OF INTERNAL FUNCTIONS \\\
 //

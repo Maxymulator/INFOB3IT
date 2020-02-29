@@ -5,14 +5,14 @@
 ///
 
 //
-/// CONSTANTS ///
+/// CONSTANTS \\\
 // the delay to debounce
 const unsigned long debounceDelay = 50;
-/// END OF CONSTANTS ///
+/// END OF CONSTANTS \\\
 //
 
 //
-/// VARIABLES ///
+/// VARIABLES \\\
 // previous button state
 int prevButton = 0;
 
@@ -21,11 +21,11 @@ int curButton = 0;
 
 // time of the last debounce check
 unsigned long lastDebounceTime = 0;
-/// END OF VARIABLES ///
+/// END OF VARIABLES \\\
 //
 
 //
-/// EXTERNAL FUNCTIONS ///
+/// EXTERNAL FUNCTIONS \\\
 void HandleButtons()
 {
   // the current reading of the buttons
@@ -60,11 +60,11 @@ void HandleButtons()
   // update the previous buttonstate
   prevButton = reading;
 }
-/// END OF EXTERNAL FUNCTIONS ///
+/// END OF EXTERNAL FUNCTIONS \\\
 //
 
 //
-/// INTERNAL FUNCTIONS ///
+/// INTERNAL FUNCTIONS \\\
 // Perform the action of the given button
 void PerformButtonAction(int button)
 {
@@ -148,5 +148,5 @@ int ReadButtons ()
   }
   return button;
 }
-/// END OF INTERNAL FUNCTIONS ///
+/// END OF INTERNAL FUNCTIONS \\\
 //
