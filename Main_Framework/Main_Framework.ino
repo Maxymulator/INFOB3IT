@@ -1,7 +1,3 @@
-/// To Do:
-// - Write a DFA
-// - implement the DFA
-
 //
 /// LIBARIES ///
 #include <LiquidCrystal.h> // LCD library
