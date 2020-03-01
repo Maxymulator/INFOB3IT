@@ -1,9 +1,9 @@
 ///
 /// Motion Control
 ///
-/// HandleMotion -> Handle the motion sensor, building up two values for the average
+/// HandleMotion() -> Handle the motion sensor, building up two values for the average
 /// MotionOverThreshold(double threshold) -> Check if the current average of motion is over the given threshold
-/// SufficientMotion -> Check if the average amount of motion is enough for cleaning
+/// SufficientMotion() -> Check if the average amount of motion is enough for cleaning
 /// IsMotionDetected() -> Check if there has been motion detected in the last 5 seconds
 ///
 

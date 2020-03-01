@@ -50,7 +50,7 @@ DallasTemperature tempSensor(&oneWire);
 const int SONAR_PIN = 8;
 
 // The max distance the sonar will see in cm
-const int SONAR_MAX_DIST = 100;
+const int SONAR_MAX_DIST = 200;
 
 // Initialize the sonar
 NewPing sonar(SONAR_PIN, SONAR_PIN, SONAR_MAX_DIST);
@@ -82,7 +82,6 @@ enum programState
   state_start_spray_two, // the system is about to spray twice
   state_spraying,        // the system is currently spraying
   state_menu,            // operator menu active
-  state_test             // state for testing purposes
 };
 /// <END OF CONSTANTS ///
 //
@@ -90,13 +89,16 @@ enum programState
 //
 /// VARIABLES ///
 // the current state of this cycle
-volatile programState currentState = state_inuse_two;
+volatile programState currentState = state_standby;
 
 // The current state of the standard display
 bool stdDisplayState = true;
 
 // The last time the standard display toggled
 unsigned long prevStdDisplayToggle = 0;
+
+// Bool denoting if the current standby mode is forced
+bool forcedStandby = false;
 /// END OF VARIABLES ///
 //
 
@@ -106,7 +108,7 @@ void setup()
 {
   // put your setup code here, to run once:
   // Pin mode setup:
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_PIN, INPUT); // set the LED pin as input to turn off both leds
   pinMode(BUTTON_PIN, INPUT);
   pinMode(LDR_PIN, INPUT);
   pinMode(MOTION_PIN, INPUT);
@@ -140,6 +142,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   HandleMotion();
+  HandleSonar();
 
   switch (currentState)
   {
@@ -188,11 +191,6 @@ void loop()
         HandleMenu();
         break;
       }
-    case state_test:
-      {
-        HandleTest();
-        break;
-      }
     default:
       {
         break;
@@ -211,6 +209,19 @@ void HandleStandbye()
   PrintLCDTopLine(F("  System is in  "));
   PrintLCDBottomLine(F("  standby mode  "));
   OffLEDGrn();
+
+  if (IsLightOn())
+  {
+    if (!forcedStandby)
+    {
+      currentState = state_inuse_unknown;
+      forcedStandby = false;
+    }
+  }
+  else
+  {
+    forcedStandby = false;
+  }
 }
 
 // handle the unknown use state
@@ -219,6 +230,11 @@ void HandleInUseUnknown()
   HandleButtons();
   HandleStdDisplay();
   OnLEDGrn();
+  if(!IsLightOn())
+  {
+    currentState = state_standby;
+    forcedStandby = true;
+  }
 }
 
 // handle the number 1 state
@@ -226,7 +242,10 @@ void HandleInUneOne()
 {
   HandleButtons();
   HandleStdDisplay();
-
+  if (!IsLightOn())
+  {
+    currentState = state_start_spray_one;
+  }
 }
 
 // handle the number 2 state
@@ -234,7 +253,10 @@ void HandleInUseTwo()
 {
   HandleButtons();
   HandleStdDisplay();
-
+  if (!IsLightOn())
+  {
+    currentState = state_start_spray_two;
+  }
 }
 
 // handle the cleaning state
@@ -242,7 +264,10 @@ void HandleCleaning()
 {
   HandleButtons();
   HandleStdDisplay();
-
+  if (!IsLightOn())
+  {
+    currentState = state_standby;
+  }
 }
 
 // handle the 'about to spray' state
@@ -260,6 +285,7 @@ void HandleSpraying()
   {
     ClearLCD();
     currentState = state_standby;
+    forcedStandby = true;
   }
 }
 
@@ -268,14 +294,6 @@ void HandleMenu()
 {
   HandleButtons();
   PrintMenu();
-}
-
-// handle the testing state
-void HandleTest()
-{
-  HandleButtons();
-  HandleStdDisplay();
-  
 }
 /// END OF STATE HANDLING ///
 //
@@ -291,7 +309,7 @@ void ToggleStdDisplay()
 // Print the standard display to the LCD
 void PrintStdDisplay()
 {
-  if(stdDisplayState)
+  if (stdDisplayState)
   {
     PrintLCDTopLine(F("Sprays remaining"));
     PrintLCDBottomLine(GetSprayCount());
@@ -306,13 +324,30 @@ void PrintStdDisplay()
 // Handles the standard display
 void HandleStdDisplay()
 {
-  if(millis() - prevStdDisplayToggle > 2000)
+  if (millis() - prevStdDisplayToggle > 2000)
   {
     ToggleStdDisplay();
     prevStdDisplayToggle = millis();
   }
-  
+
   PrintStdDisplay();
+}
+
+// Guess the use of the program and change state accordingly
+void GuessUse()
+{
+  if (SufficientMotion()) // motion is above threshold, so user must be cleaning
+  {
+    currentState = state_inuse_clean;
+  }
+  else if (SonarCheckSitting()) // distane is below threshold, so user is sitting and thus performing number 2
+  {
+    currentState = state_inuse_two;
+  }
+  else // user must be performing number 1
+  {
+    currentState = state_inuse_one;
+  }
 }
 /// END OF INTERNAL FUNCTIONS ///
 //

@@ -1,7 +1,6 @@
 ///
 /// LED handling
 ///
-/// External functions:
 /// OnLEDGrn() -> turn the green LED on 
 /// OnLEDYlw() -> turn the yellow LED on
 /// OnLEDBth() -> turn both LEDs on
@@ -23,7 +22,7 @@ bool ledYlwOn = false;
 //
 
 //
-/// EXTERNAL COMMANDS ///
+/// EXTERNAL FUNCTIONS ///
 // Turn on the green LED
 void OnLEDGrn()
 {
@@ -89,11 +88,11 @@ void ToggleLEDBth()
   ledYlwOn = !ledYlwOn;
   HandleLEDs();
 }
-/// END OF EXTERNAL COMMANDS ///
+/// END OF EXTERNAL FUNCTIONS ///
 //
 
 //
-/// INTERNAL COMMANDS ///
+/// INTERNAL FUNCTIONS ///
 void HandleLEDs()
 {
   // Both LEDs are on
@@ -120,5 +119,5 @@ void HandleLEDs()
     digitalWrite(LED_PIN, LOW);
   }
 }
-/// END OF INTERNAL COMMANDS ///
+/// END OF INTERNAL FUNCTIONS ///
 //

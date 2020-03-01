@@ -54,7 +54,7 @@ bool Spray()
   {
     return true; // done spraying
   }
-  if (curMillis - sprayCommandTime > sprayDelay) // Wait for the initial delay
+  if (curMillis - sprayCommandTime > sprayDelay && !SprayBlocked()) // Wait for the initial delay
   {
     if (sprayState == LOW)
     {
@@ -163,7 +163,23 @@ void HandleImminentSprayingMessage(unsigned long curMillis)
 {
   PrintLCDTopLine("Spraying in:    ");
   unsigned long timeRemaining = sprayDelay - (curMillis - sprayCommandTime);
-  PrintLCDBottomLine((timeRemaining / 1000));
+  if (timeRemaining > sprayDelay)
+  {
+    timeRemaining = 0;
+  }
+  else
+  {
+    timeRemaining /= 1000;
+  }
+  if (SprayBlocked())
+  {
+    PrintLCDBottomLine(F("Spray blocked"));
+  }
+  else
+  {
+    PrintLCDBottomLine(timeRemaining);
+
+  }
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //

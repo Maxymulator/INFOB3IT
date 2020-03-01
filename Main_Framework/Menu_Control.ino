@@ -44,6 +44,7 @@ void ConfirmMenu()
     {
       menuState = 0;
       ClearLCD();
+      forcedStandby = true;
       currentState = state_standby;
       break;
     }

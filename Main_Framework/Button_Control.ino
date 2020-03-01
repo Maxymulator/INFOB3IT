@@ -92,6 +92,7 @@ void PerformButtonAction(int button)
         }
         else
         {
+          forcedStandby = true;
           currentState = state_standby;
         }
         break;

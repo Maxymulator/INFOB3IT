@@ -1,6 +1,8 @@
 ///
 /// Flush control
 ///
+/// CheckFlush() -> Check if the user is currently flushing
+///
 
 //
 /// EXTERNAL FUNCTIONS ///
@@ -15,14 +17,9 @@ void HandleFlushInterrupt()
 {
   switch (currentState)
   {
-    case state_inuse_one:
+    case state_inuse_unknown:
       {
-        currentState = state_start_spray_one;
-        break;
-      }
-    case state_inuse_two:
-      {
-        currentState = state_start_spray_two;
+        GuessUse();
         break;
       }
     default:
