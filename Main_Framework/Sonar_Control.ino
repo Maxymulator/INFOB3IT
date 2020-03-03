@@ -5,6 +5,7 @@
 /// SonarPingcm() -> Read the current distance
 /// SprayBlocked() -> Check if the spraying mechanism is blocked
 /// SonarCheckSitting() -> Check if the user, on average, was sitting down
+/// ResetSonar() -> Resets the running average
 ///
 
 //
@@ -75,6 +76,13 @@ bool SonarCheckSitting()
 {
   unsigned long average = sonarTotal / sonarCount;
   return (average < 40);
+}
+
+// Resets the running average
+void ResetSonar()
+{
+  sonarTotal = 0;
+  sonarCount = 0;
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //

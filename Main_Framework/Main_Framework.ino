@@ -137,9 +137,6 @@ void setup()
 void loop()
 {
   // put your main code here, to run repeatedly:
-  HandleMotion();
-  HandleSonar();
-
   switch (currentState)
   {
     case state_standby:
@@ -201,6 +198,7 @@ void loop()
 // handle the standby state
 void HandleStandbye()
 {
+  ResetSensors();
   HandleButtons();
   PrintLCDTopLine(F("  System is in  "));
   PrintLCDBottomLine(F("  standby mode  "));
@@ -223,6 +221,7 @@ void HandleStandbye()
 // handle the unknown use state
 void HandleInUseUnknown()
 {
+  HandleSensors();
   HandleButtons();
   HandleStdDisplay();
   OnLEDGrn();
@@ -236,6 +235,7 @@ void HandleInUseUnknown()
 // handle the number 1 state
 void HandleInUneOne()
 {
+  HandleSensors();
   HandleButtons();
   HandleStdDisplay();
   if (!IsLightOn())
@@ -247,6 +247,7 @@ void HandleInUneOne()
 // handle the number 2 state
 void HandleInUseTwo()
 {
+  HandleSensors();
   HandleButtons();
   HandleStdDisplay();
   if (!IsLightOn())
@@ -258,6 +259,7 @@ void HandleInUseTwo()
 // handle the cleaning state
 void HandleCleaning()
 {
+  HandleSensors();
   HandleButtons();
   HandleStdDisplay();
   if (!IsLightOn())
@@ -344,6 +346,20 @@ void GuessUse()
   {
     currentState = state_inuse_one;
   }
+}
+
+// Calculates the running averages of the motion and sonar sensor
+void HandleSensors()
+{
+  HandleMotion();
+  HandleSonar();
+}
+
+// Resets the running averages of the motion and sonar sensor
+void ResetSensors()
+{
+  ResetSonar();
+  ResetMotion();
 }
 /// END OF INTERNAL FUNCTIONS ///
 //

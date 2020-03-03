@@ -5,6 +5,7 @@
 /// MotionOverThreshold(double threshold) -> Check if the current average of motion is over the given threshold
 /// SufficientMotion() -> Check if the average amount of motion is enough for cleaning
 /// IsMotionDetected() -> Check if there has been motion detected in the last 5 seconds
+/// ResetMotion() -> Resets the running average
 ///
 
 //
@@ -69,6 +70,13 @@ bool MotionOverThreshold(double threshold)
 bool SufficientMotion()
 {
   return MotionOverThreshold(0.7); //from testing 0.7 seems to be a decent threshold for cleaning
+}
+
+// Reset the running average
+void ResetMotion()
+{
+  motionTotal = 0;
+  motionCount = 0;
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //
