@@ -21,6 +21,13 @@ int readLDR()
   return analogRead(ANALOG_INPUT);
 }
 
+float readLDRPercent()
+{
+  float val = (float)readLDR();
+  float returnVal = (val / 1024) * 100;
+  return returnVal;
+}
+
 // Reads the value from the soilmoisture sensor and returns it
 int readSoilMoisture()
 {
@@ -29,6 +36,13 @@ int readSoilMoisture()
     switchAnalogToMoisture();
   }
   return analogRead(ANALOG_INPUT);
+}
+
+float readSoilMoisturePercent()
+{
+  float val = readSoilMoisture();
+  float returnVal = (val / 1024) * 100;
+  return returnVal;
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //
@@ -48,7 +62,7 @@ void switchAnalogToMoisture()
   analogState = HIGH;
   digitalWrite(ANALOG_SELECT_PIN, analogState);
   // Give the soil moisture sensor some time to stabilize, also give the nodeMCU some time to do WiFi maintanance.
-  delay(100);
+  //delay(100);
 }
 /// END OF INTERNAL FUNCTIONS ///
 //

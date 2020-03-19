@@ -34,15 +34,36 @@ SSD1306Wire display(0x3c, D3, D4);
 
 // Servo setup
 Servo servo;
+
+// WiFi setup
+WiFiClient wifiClient;
+
+// MQTT client setup
+PubSubClient mqttClient(wifiClient);
+
+// MQTT topics
+const char* topicWater = "infob3it/107/WaterPlant";                 // Topic for plant watering
+const char* topicSensors = "infob3it/107/ReadSensors";              // Topic for reading all sensors
+const char* topicTemperature = "infob3it/107/Sensors/Temperature";  // Topic for the temperature   (in °C)
+const char* topicHumidity = "infob3it/107/Sensors/Humidity";        // Topic for the humidity      (in %)
+const char* topicSoilMoisture = "infob3it/107/Sensors/Soil";        // Topic for the soil moisture (in %)
+const char* topicLight = "infob3it/107/Sensors/Light";              // Topic for the light level   (in %)
+const char* topicPressure = "infob3it/107/Sensors/Pressure";        // Topic for the pressure      (in HPa)
+
+// MQTT auto publish delay
+const unsigned long mqttDelay = 5000;
 /// END OF CONSTANTS ///
 //
 
 //
 /// VARIABLES ///
-
+// MQTT last auto publish time
+unsigned long mqttLastPubTime = 0;
 /// END OF VARIABLES ///
 //
 
+//
+/// MAIN FUNCTIONS ///
 void setup() {
   // put your setup code here, to run once:
   // Initialize the serial monitor
@@ -64,11 +85,70 @@ void setup() {
   // Servo initialization
   servo.attach(SERVO_PIN);
   servo.write(0);
+
+  // WiFi initialization
+  initWiFi();
+
+  // MQTT initialization
+  initMQTT();
+
+  // Random seed initialization
+  randomSeed(micros());
+
+  // Set the analog input to the ldr, to avoid corrosion
+  switchAnalogToLDR();
+  //switchAnalogToMoisture();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   printOLEDBME();
   handleServo();
+  handleMQTT();
   display.display();
+  //Serial.println(String(readSoilMoisture()) + ": " + String(readSoilMoisturePercent()));
+
+  // Publish sensor data once every 5 seconds
+  if( millis() - mqttLastPubTime > mqttDelay)
+  {
+    readAndPublishSensors();
+    mqttLastPubTime = millis();
+  }
 }
+/// END OF MAIN FUNCTIONS ///
+//
+
+//
+/// INTERNAL FUNCTIONS ///
+void readAndPublishSensors()
+{
+  // Read all sensor values
+  // Read the ldr value
+  float ldrVal = readLDRPercent();
+  // Activate the soil moisture sensor, giving it some time to acclimate
+  switchAnalogToMoisture();
+  // Read the temperature
+  float temperatureVal = getTemperature();
+  // Read the pressure
+  float pressureVal = getPressure();
+  // Read the humidity
+  float humidityVal = getHumidity();
+  // Read the soil moisture level
+  float soilVal = readSoilMoisturePercent();
+  // Turn the soil moisture sensor off to preserve it
+  switchAnalogToLDR();
+
+  // Publish all values
+  // Publish light percentage
+  publishMQTT(topicLight, ldrVal);
+  // Publish temperature
+  publishMQTT(topicTemperature, temperatureVal);
+  // Publish pressure
+  publishMQTT(topicPressure, pressureVal);
+  // Publish humidity
+  publishMQTT(topicHumidity, humidityVal);
+  // Publish soil moisture
+  publishMQTT(topicSoilMoisture, soilVal);
+}
+/// END OF INTERNAL FUNCTIONS ///
+//

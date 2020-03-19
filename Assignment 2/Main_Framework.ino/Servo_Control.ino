@@ -1,18 +1,25 @@
 ///
 /// Servo control
 ///
+/// activateServo() ->
 
 //
 /// CONSTANTS ///
 // The delay to wait for the servo to reach it's position
 unsigned long servoDelay = 20;
+
+// The delay to water the plant
+unsigned long servoWaterDelay = 2000;
 /// END OF CONSTANTS ///
 //
 
 //
 /// VARIABLES ///
-// Bool defining if the servo should be running at the moment
+// Bool denoting if the servo should be running at the moment
 bool servoRunning = false;
+
+// Bool denoting if the servo is waiting while watering the plant
+bool servoWaiting = false;
 
 // Bool denoting if the servoPos is currently increasing. true = increasing, false = decreasing
 bool servoIncreasing = true;
@@ -27,16 +34,26 @@ unsigned long servoPrevTime = 0;
 
 //
 /// EXTERNAL FUNCTIONS ///
-// Handles the servo motor 
+// Handles the servo motor
 void handleServo()
 {
   if (!servoRunning) return;
-  if ( millis() - servoPrevTime > servoDelay)
+  if (servoWaiting && millis() - servoPrevTime > servoWaterDelay)
+  {
+    servoWaiting = false;
+  }
+  if (!servoWaiting && millis() - servoPrevTime > servoDelay)
   {
     updateServoPos();
     servo.write(servoPos);
     servoPrevTime = millis();
   }
+}
+
+// Activate the watering mechanism
+void activateServo()
+{
+  servoRunning = true;
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //
@@ -51,6 +68,7 @@ void updateServoPos()
     if (servoPos == 180)
     {
       servoIncreasing = false;
+      servoWaiting = true;
     }
   }
   else
@@ -59,6 +77,7 @@ void updateServoPos()
     if (servoPos == 0)
     {
       servoIncreasing = true;
+      servoRunning = false;
     }
   }
 }
