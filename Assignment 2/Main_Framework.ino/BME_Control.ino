@@ -46,7 +46,7 @@ float getAltitude()
 // Reads the approximated altitude and returns it as a string with the meter sign appended
 String getAltitudeString()
 {
-  return (String(getAltitude) + F(" m"));
+  return (String(getAltitude()) + F(" m"));
 }
 
 // Reads the humidity and returns the float value
