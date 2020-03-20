@@ -4,8 +4,8 @@
 
 //
 /// CONSTANTS ///
-const char* ssid = "...."; // Fill in your ssid credentials here
-const char* password = "...."; // Fill in your password here
+//const char* ssid = "...."; // Fill in your ssid credentials here
+//const char* password = "...."; // Fill in your password here
 /// END OF CONSTANTS ///
 //
 

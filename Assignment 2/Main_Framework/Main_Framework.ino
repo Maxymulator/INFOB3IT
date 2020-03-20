@@ -19,7 +19,7 @@ const int ANALOG_SELECT_PIN = D1;
 const int ANALOG_INPUT = A0;
 
 // The servo is connected to pin D2
-const int SERVO_PIN = D2;
+const int SERVO_PIN = D5;
 
 // BME280 setup
 #define BME_SCK 13
