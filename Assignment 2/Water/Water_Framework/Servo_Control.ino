@@ -7,9 +7,6 @@
 /// CONSTANTS ///
 // The delay to wait for the servo to reach it's position
 unsigned long servoDelay = 20;
-
-// The delay to water the plant
-unsigned long servoWaterDelay = 2000;
 /// END OF CONSTANTS ///
 //
 
@@ -38,7 +35,7 @@ unsigned long servoPrevTime = 0;
 void handleServo()
 {
   if (!servoRunning) return;
-  if (servoWaiting && millis() - servoPrevTime > servoWaterDelay)
+  if (servoWaiting && millis() - servoPrevTime > wateringDuration)
   {
     servoWaiting = false;
   }
@@ -65,7 +62,7 @@ void updateServoPos()
   if (servoIncreasing)
   {
     servoPos += 1;
-    if (servoPos == 180)
+    if (servoPos == 90)
     {
       servoIncreasing = false;
       servoWaiting = true;

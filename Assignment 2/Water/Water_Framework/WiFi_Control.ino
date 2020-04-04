@@ -17,13 +17,12 @@ void initWiFi()
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
-
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+  while (WiFi.waitForConnectResult() != WL_CONNECTED)
+  {
     Serial.print('.');
-    delay(500);
+    delay(200);
   }
 
   Serial.println();

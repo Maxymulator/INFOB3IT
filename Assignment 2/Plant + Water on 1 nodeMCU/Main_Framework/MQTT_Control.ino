@@ -10,6 +10,9 @@ const char* mqtt_server = "mqtt.uu.nl";
 // The mqtt credentials
 #define MQTT_USERNAME "student107"
 #define MQTT_PASSWORD "W42Ktgvj"
+
+// LWT message
+const char* lwtMessage = "Offline";
 /// END OF CONSTANTS ///
 //
 
@@ -51,23 +54,23 @@ void handleMQTT()
 
 // Publish a given message on a given subject
 // Overloaded for string, int, float
-void publishMQTT(const char* topic, char* payload)
+void publishMQTT(const char* topic, char* payload, bool retain)
 {
   Serial.print("Publishing [");
   Serial.print(topic);
   Serial.print("]: ");
   Serial.println(payload);
-  mqttClient.publish(topic, payload);
+  mqttClient.publish(topic, payload, retain);
 }
-void publishMQTT(const char* topic, int payload)
+void publishMQTT(const char* topic, int payload, bool retain)
 {
   Serial.print("Publishing [");
   Serial.print(topic);
   Serial.print("]: ");
   Serial.println(payload);
-  mqttClient.publish(topic, (byte*)payload, 4, true);
+  mqttClient.publish(topic, (byte*)payload, 4, retain);
 }
-void publishMQTT(const char* topic, float payload)
+void publishMQTT(const char* topic, float payload, bool retain)
 {
   Serial.print("Publishing [");
   Serial.print(topic);
@@ -76,7 +79,20 @@ void publishMQTT(const char* topic, float payload)
   String messageS = String(payload);
   char message[50];
   messageS.toCharArray(message, messageS.length() + 1);
-  mqttClient.publish(topic, message);
+  mqttClient.publish(topic, message, retain);
+}
+
+// Returns the status of the mqtt connection
+String getMQTTStatus()
+{
+  if(mqttClient.connected())
+  {
+    return "Connected";
+  }
+  else
+  {
+    return "Not Connected";
+  }
 }
 /// END OF EXTERNAL FUNCTIONS ///
 //
@@ -86,12 +102,22 @@ void publishMQTT(const char* topic, float payload)
 // Re-establish the MQTT connections
 bool reconnectMQTT()
 {
-  String clientID = "ESP8266_Plant_107";
+  String clientID = "107_Plant";
   Serial.println("Attempting MQTT connection");
-  if (mqttClient.connect(clientID.c_str(), MQTT_USERNAME, MQTT_PASSWORD))
+  if (mqttClient.connect( clientID.c_str() // Client id
+                        , MQTT_USERNAME    // MQTT username
+                        , MQTT_PASSWORD    // MQTT password
+                        , topicStatus      // Last will topic
+                        , 1                // Last will QoS
+                        , 1                // Last will retain flag (set to true)
+                        , lwtMessage       // Last will message
+                        , false))          // Clean session flag
   {
     Serial.println("MQTT connected");
+    // Subscribe to your topics
     subscribeMQTT();
+    // Publish that you are online
+    publishMQTT(topicStatus, (char*)"Online", true);
   }
   return mqttClient.connected();
 }
@@ -99,8 +125,11 @@ bool reconnectMQTT()
 // Subscribe to needed topics
 void subscribeMQTT()
 {
-  mqttClient.subscribe(topicWater);
-  mqttClient.subscribe(topicSensors);
+  mqttClient.subscribe(topicWater, 1);
+  mqttClient.subscribe(topicSensors, 1);
+  mqttClient.subscribe(topicMode, 1);
+  mqttClient.subscribe(topicWaterTime, 1);
+  mqttClient.subscribe(topicWaterDur, 1);
 }
 
 // Handle incoming messages
@@ -123,6 +152,18 @@ void callback(char* topic, byte* payload, unsigned int len)
   {
     handleWaterCommand(payload);
   }
+  else if (strcmp(topic, topicMode) == 0)
+  {
+    handleModeCommand(payload);
+  }
+  else if (strcmp(topic, topicWaterTime) == 0)
+  {
+    handleWaterTimeCommand(payload, len);
+  }
+  else if (strcmp(topic, topicWaterDur) == 0)
+  {
+    handleWaterDurCommand(payload, len);
+  }
 }
 
 // Handle sensor command
@@ -141,6 +182,38 @@ void handleWaterCommand(byte* payload)
   {
     activateServo();
   }
+}
+
+// Handle mode command
+void handleModeCommand(byte* payload)
+{
+  // Handle the current mode
+}
+
+// Handle water time command
+void handleWaterTimeCommand(byte* payload, unsigned int len)
+{
+  lastWaterTime = "";
+  for (int i = 0; i < len; i++) 
+  {
+    lastWaterTime += (char)payload[i];
+  }
+}
+// Handle water time command
+void handleWaterDurCommand(byte* payload, unsigned int len)
+{
+  String valS = "";
+  for (int i = 0; i < len; i++) 
+  {
+    valS += (char)payload[i];
+  }
+  Serial.print(String(valS));
+  Serial.print(", ");
+  int val = valS.toInt();
+  Serial.print(val);
+  Serial.print(", ");
+  wateringDuration = val * 1000;
+  Serial.println(wateringDuration);
 }
 /// END OF INTERNAL FUNCTIONS ///
 //

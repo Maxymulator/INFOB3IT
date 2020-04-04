@@ -7,8 +7,13 @@
 #include <Servo.h>           // Servo library
 #include <ESP8266WiFi.h>     // WiFi library
 #include <PubSubClient.h>    // MQTT library
+#include "images.h"          // Include the images
 /// END OF LIBRARIES ///
 //
+
+void publishMQTT(const char* topic, char* payload, bool retain = false);
+void publishMQTT(const char* topic, float payload, bool retain = false);
+void publishMQTT(const char* topic, int payload, bool retain = false);
 
 //
 /// CONSTANTS ///
@@ -42,13 +47,17 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
 // MQTT topics
-const char* topicWater = "infob3it/107/WaterPlant";                 // Topic for plant watering
-const char* topicSensors = "infob3it/107/ReadSensors";              // Topic for reading all sensors
-const char* topicTemperature = "infob3it/107/Sensors/Temperature";  // Topic for the temperature   (in °C)
-const char* topicHumidity = "infob3it/107/Sensors/Humidity";        // Topic for the humidity      (in %)
-const char* topicSoilMoisture = "infob3it/107/Sensors/Soil";        // Topic for the soil moisture (in %)
-const char* topicLight = "infob3it/107/Sensors/Light";              // Topic for the light level   (in %)
-const char* topicPressure = "infob3it/107/Sensors/Pressure";        // Topic for the pressure      (in HPa)
+const char* topicWater        = "infob3it/107/Plant/WaterPlant";          // Topic for plant watering
+const char* topicSensors      = "infob3it/107/Plant/ReadSensors";         // Topic for reading all sensors
+const char* topicMode         = "infob3it/107/Plant/Mode";                // Topic for the current mode of the plant: auto/ manual
+const char* topicStatus       = "infob3it/107/Plant/Status";              // Topic for the current status of this client
+const char* topicWaterTime    = "infob3it/107/Plant/LastWaterTimer";      // Topic for the timer since the last watering of the plant
+const char* topicWaterDur     = "infob3it/107/Plant/WaterDuration";       // Topic for the duration of watering the plant
+const char* topicTemperature  = "infob3it/107/Plant/Sensors/Temperature"; // Topic for the temperature   (in °C)
+const char* topicHumidity     = "infob3it/107/Plant/Sensors/Humidity";    // Topic for the humidity      (in %)
+const char* topicSoilMoisture = "infob3it/107/Plant/Sensors/Soil";        // Topic for the soil moisture (in %)
+const char* topicLight        = "infob3it/107/Plant/Sensors/Light";       // Topic for the light level   (in %)
+const char* topicPressure     = "infob3it/107/Plant/Sensors/Pressure";    // Topic for the pressure      (in HPa)
 
 // MQTT auto publish delay
 const unsigned long mqttDelay = 5000;
@@ -59,6 +68,12 @@ const unsigned long mqttDelay = 5000;
 /// VARIABLES ///
 // MQTT last auto publish time
 unsigned long mqttLastPubTime = 0;
+
+// The duration of watering the plant;
+int wateringDuration = 5000;
+
+// Time since the plant was last watered, gotten through mqtt
+String lastWaterTime = "";
 /// END OF VARIABLES ///
 //
 
@@ -78,14 +93,15 @@ void setup() {
   display.flipScreenVertically();
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   display.setFont(ArialMT_Plain_10);
-
+  display.clear();
+  
   // BME280 initialization
   bme.begin();
 
   // Servo initialization
   servo.attach(SERVO_PIN);
   servo.write(0);
-
+  
   // WiFi initialization
   initWiFi();
 
@@ -102,10 +118,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  printOLEDBME();
+  handleOLED();
   handleServo();
   handleMQTT();
-  display.display();
   //Serial.println(String(readSoilMoisture()) + ": " + String(readSoilMoisturePercent()));
 
   // Publish sensor data once every 5 seconds
